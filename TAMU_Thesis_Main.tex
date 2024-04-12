@@ -1,0 +1,199 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Main document template code for TAMU Theses and 
+%  Dissertations starting Spring 2020.
+%
+%  Author:  Kyle R. Wodzicki  
+%  Version: 0.20.01
+%  Updated: 16 Jun. 2020
+%    Better matches the Spring 2020 OGAPS template
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The tamu_thesis class has the following options:
+%   11pt or 12pt - This sets the size of the 
+%      text for the document. Use 12pt unless
+%      you have approval from OGAPS to use
+%      11pt.
+%   thesis - Add this option to set document type to Thesis.
+%             Default is Dissertation
+%   phd    - Add this option to set degree to DOCTOR OF PHILOSOPHY.
+%             Defuault is MASTER OF SCIENCE
+%   onehalfspacing - Changes spacing to 1.5
+%      spacing. The default is to use double
+%      spacing. Do NOT use this option unless
+%      you have approval from OGPAS.
+%   arial - Changes the font of the document to
+%      Arial. The default font is Times New Roman.
+%   binding - Changes the left margin to be 1.4
+%      inches for binding purposes (recommended
+%      in the thesis manual). The default is to
+%      use 1 inch margins on all sides.
+%   chapref - Will generate a references section
+%      for each chapter of the document. The
+%      default is to have  References chapter
+%      after the main chapters of the document.
+%   natbib - Will load the natbib package that is
+%      required for some bibliography styles. If
+%      you don't know what natbib is, you probably
+%      don't need it.
+%   draft - Enables draft mode. This will speed up
+%     compiling of document by disabling hyper-
+%     references and inserting wire frames where
+%     images/figures should be.
+%   acroall - Enables display of all nomenclature
+%     (acronyms) defined in the nomenclature.tex 
+%      file. Default is to display only those 
+%      acronyms that have been used in an \ac{}
+%      command.
+%   acrohover - Enable full acronym definition 
+%      pop-ups when hovering over an acronym in the 
+%      text. Default is to NOT show full definition
+%      when hovering. May not work in Preview on Mac.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt,phd,acroall,natbib,chapref]{tamu_thesis} % Load the tamu_thesis document class
+% "chapref" has an issue that generates blank reference pages in unwanted sections like Abstract, Acknowledgement, etc.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%          Load extra packages here            %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{multirow}			        	% Multirow package for tables
+\usepackage{footnote}			        	% Package for the savenotes command
+\usepackage{amsthm}				        % AMS package for theorems
+\usepackage{url}			            	% Load the url package
+%\usepackage{showframe}                 		% Show frame for margins for debugging
+
+
+\usepackage[hidelinks]{hyperref}% DO NOT TOUCH THIS!!! hyperref with links hidden 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Set path to the figures and figure extensions %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\graphicspath{ {./graphic/},{./figures/}  } % Locations of figures
+\DeclareGraphicsExtensions{.eps,.pdf,.png,.PNG,.jpg}  % Figure extensions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define custom  commands for easier typing        %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\mmday}{mm day$^{-1}$}  % Command for mm day^-1 units
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%       Set information for title page.        %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Delete or comment out tags that are NOT needed
+\Title{Numerical and physical mixing in simulations of submesoscale baroclinic instabilities over sloping bathymetry}
+\FullName{Dylan Schlichting}      % Enter full name
+\Chair{Dr.~Henry Potter}               % Enter name of committee chair
+\CoChair{Dr.~Robert Hetland}         % Enter name of committee co-chair
+\MemberOne{Dr.~Spencer Jones}   % Name of first committee member
+\MemberTwo{Dr.~Scott Socolofsky}   % Name of second committee member
+% \MemberThree{} % Name of third committee member
+\DeptHead{Dr.~Shari Yvon-Lewis}    % Enter name of department head
+\GradMonth{August}                  % Enter graduation month
+\GradYear{2024}                  % Enter graduation year
+\Dept{Oceanography}               % Enter department name	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Set bibliography file and bibliography style  %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibFile{references}               % Set the bibliography file to use
+% \bibStyle{apalike}                   % Set the bibliography style to use
+\bibStyle{ametsocV6}   
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Additional Customization by Ronnie   %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Following packages have been added to modify the forked version 0.20.01 that was last updated on 16 Jun 2020
+%%% The modification is aimed to:
+%%% (1) Make the reference lists only appear at the end of each manuscript chapter (the "chapref" does not work well as it printed the reference sections at the end of every section, including Abstract, Dedication, Acknowledgements, etc.
+%%% (2) Add packages to rotate certain pages into landscape layout
+%%% (3) Add "natbib" as a preample-- did not use the provided option from Version 0.20.1 as it does not seem to work properly for some reasons
+%%% Last updated: 06/14/2023
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[labelfont=bf]{caption}
+\usepackage{float}
+\floatplacement{figure}{p}
+\floatplacement{table}{p}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{{booktabs}}
+\usepackage{tabulary}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{lipsum}
+
+
+\usepackage{etoolbox}
+\usepackage{pdflscape}
+\usepackage{fancyhdr} 
+\fancypagestyle{mylandscape}{
+\fancyhf{} %Clears the header/footer
+\fancyfoot{% Footer
+\makebox[\textwidth][r]{% Right
+  \rlap{\hspace{.75cm}% Push out of margin by \footskip
+    \smash{% Remove vertical height
+      \raisebox{4.87in}{% Raise vertically
+        \rotatebox{90}{\thepage}}}}}}% Rotate counter-clockwise
+\renewcommand{\headrulewidth}{0pt}% No header rule
+\renewcommand{\footrulewidth}{0pt}% No footer rule
+}
+\usepackage{adjustbox}
+% \setlength\bibhang{20pt}
+\setlength{\parindent}{20pt}
+\hypersetup{
+  colorlinks,
+  citecolor=RoyalBlue,
+  linkcolor=Black,
+  urlcolor=RoyalBlue}
+\usepackage{scalerel,amssymb}
+\usepackage{makecell}
+\usepackage{siunitx}
+\usepackage{indentfirst}
+\usepackage{caption}
+% \usepackage{natbib}
+\usepackage{subcaption}
+\usepackage{fontspec}
+\usepackage{lineno}
+\usepackage{emptypage}
+\usepackage{float}
+\floatstyle{plaintop}
+\restylefloat{table}
+\usepackage[tableposition=top]{caption}
+
+
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%          Beginning of the document           %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle% DO NOT TOUCH THIS!!!
+
+% Be sure to include all TeX files to be used in your document!
+\include{./Data/abstract}            % Include the abstract.tex file
+\include{./Data/dedication}          % Include the dedication file
+\include{./Data/acknowledgements}    % Include the acknowledgements file
+\include{./Data/contributors}        % Include the contributors file
+\makeNomenclature                    % Generate nomenclature. NOT REQUIRED
+
+\makeToC% DO NOT TOUCH THIS!!!
+
+% Include all chapters/sections of the thesis.
+% DO NOT INCLUDE THE .tex EXTENSION IN THE FILE PATHS!!!!!
+\include{./Data/Section1_Introduction} % Include the Section1.tex file --- Introduction 
+\include{./Data/Section2_Ch1_james_2023} % Include the Section2.tex file --- Chapter 1
+\include{./Data/Section3_Ch2_shelfstrat_2024} % Include the Section3.tex file --- Chapter 
+\include{./Data/Section4_Ch3_mpaso.tex}		% Include the Section4.tex file --- Chapter 3
+\include{./Data/Section5_Conclusion}       % Include the Section5.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generate the Bibliography DO NOT TOUCH THIS!!!
+\makebibliography
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Include appendices. 
+% MUST BE IN APPENDICES ENVIRONMENT!!!
+\begin{appendices}
+    \include{./Data/appendix1_Ch1}			% Include the appendix1.tex file
+    \include{./Data/appendix2_Ch2}			% Include the appendix2.tex file
+\end{appendices}
+
+\end{document}

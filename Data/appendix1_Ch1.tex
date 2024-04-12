@@ -1,0 +1,92 @@
+% % !TEX root = ../TAMU_Thesis_Main.tex
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%                           APPENDIX A 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \phantomsection
+\chapter{Appendix for Quantification of physical and numerical mixing in a coastal ocean model using salinity variance budgets}%\label{appendix:01}
+
+\section{Numerical implementation of the offline method} %\label{Appendix:offline_method}
+
+Here, we provide details of the numerical implementation of Eq. \ref{eq:salt2_mnum} and Eq. \ref{eq:sprime2_mnum} for the case of hourly model output. We used average files to construct the volume-integrated $s^2$ and $s^{\prime^2}$ budgets, which output averages of all variables between each hour. The implementation is shown for a 3D control volume $V$ larger than one discrete water column. Spatial indices are denoted with subscripts $i,j,k$ corresponding to the $x,y,z$ directions with temporal index $n$. Calculations at the cell centers are denoted with whole indices. Calculations on the center of cell edges are denoted with half indices. 
+
+Starting with the volume-integrated $s^2$ budget, the tendency term $\mathrm{Tend}^n$ was calculated as
+\begin{equation} \label{eq:append_tend}
+        \mathrm{Tend}^n = \sum_{i=1}^{I}\sum_{j=1}^{J}\sum_{k=1}^{K} \frac{\partial_t \left(\delta_{i,j,k}^n \left(s_{i,j,k}^{n} \right)^2 \right)}{\delta_{i,j,k}^n} \, dV \quad ,
+\end{equation}
+where $\partial_t$ denotes a centered finite difference, i.e., 
+\begin{equation} \label{eq:append_finitediff}
+        \partial_t \left(\delta_{i,j,k}^n \left(s_{i,j,k}^{n} \right)^2 \right) = \frac{\delta_{i,j,k}^{n+1} \left(s_{i,j,k}^{n+1} \right)^2-\delta_{i,j,k}^{n-1} \left(s_{i,j,k}^{n-1} \right)^2}{2 \Delta T} \quad ,
+\end{equation}
+where $\delta_{i,j,k}^n$ is the vertical layer thickness, $(s_{i,j,k}^{n})^2$ is the salt squared and $\Delta T$ is the model output frequency, not to be confused with the model timestep (e.g, Eq. \ref{Eq:mnum_online}). $\mathrm{Tend^n}$ is discretized as the volume integral of the time rate of change of the total $s^2$ content in a cell divided by the cell thickness. We computed the tendency terms in this form because the offline method consistently yielded better agreement between $\mathcal{M}_{num,s^2}$, $\mathcal{M}_{num,s^{\prime^2}}$, and $\mathcal{M}_{num,on}$. 
+
+There are several methods to compute the advection term $\mathrm{Adv^n}$. An advantage of using average files compared to model snapshots (history files) is that they include the volume-conserving fluxes Huon and Hvom, which are the volume fluxes through the $x$ and $y$ faces calculated online that are averaged over the specified output frequency. They are defined as
+\begin{equation}
+        \begin{split}
+        \mathrm{Huon}_{i \pm 1/2,j,k}^n & = \left(DY_{i\pm 1/2,j} \right) \left(\delta_{i\pm 1/2,j,k}^n \right) \left(u_{i\pm 1/2,j,k}^n \right) \\
+        \mathrm{Hvom}_{i,j \pm 1/2,k}^n & = \left(DX_{i,j\pm 1/2}\right)\left(\delta_{i,j\pm 1/2,k}^n\right)\left(v_{i,j\pm 1/2,k}^n\right) \quad ,
+        \end{split}
+\end{equation}
+where $DY$ is the cell width in the $y$ direction and $DX$ is the cell boundary width in the $x$ direction. As \cite{MacCready_2016} note, using Huon and Hvom helps reduce errors when quantifying advection through the lateral boundaries. The boundary fluxes may also be computed offline without the volume-conserving fluxes, however there may be decrease in accuracy. \text{Adv}$^n$ is formulated such that fluxes out of the control volume are considered positive and was calculated as 
+\begin{equation} \label{eq:append_adv}
+        \begin{split}
+        \mathrm{Adv}^n = \sum_{j=1}^{J}\sum_{k=1}^{K}\left(\text{Huon}_{i \pm 1/2, j,k}^n \right) \left(s_{i \pm 1/2,j,k}^{n} \right)^2 \bigg|_{W}^{E}+ \\ 
+        \sum_{i=1}^{I}\sum_{k=1}^{K} \left(\text{Hvom}_{i,j \pm 1/2,k}^n \right) \left(s_{i,j \pm 1/2,k}^{n} \right)^2 \bigg|_{S}^{N}
+        \end{split}    
+\end{equation}
+
+where $E,W,N,S$ denote the east, west, north, and south boundaries of the control volume, respectively. The half indices in this case correspond to the centers of cell edges at the lateral boundaries. To expand the $\pm$ notation, $(s_{i-1/2,j,k}^{n})^2$ corresponds to $s^2$ at the western boundary of the control volume, $(s_{i+1/2,j,k}^{n})^2$ corresponds to the eastern boundary, $(s_{i,j-1/2,k}^{n})^2$ corresponds to southern boundary, and $(s_{i,j+1/2,k}^{n})^2$ corresponds to the northern boundary. 
+
+The surface $s^2$ flux $\mathrm{surf}^n$ was calculated as
+\begin{equation} \label{eq:append_surf}
+        \mathrm{surf}^n = \sum_{i=1}^{I}\sum_{j=1}^{J}(2s_{i,j}^n)(s_{i,j}^n) \left(\frac{E_{i,j}^n-P_{i,j}^n}{\rho_w} \right) \, dA
+\end{equation}
+
+where $E_{i,j}^n$ and $P_{i,j}^n$ are the evaporation and precipitation per unit area (``Evaporation" and ``Rain" in ROMS output) computed online as part of the model forcing, and $\rho_w$ is the density of freshwater set to a constant value of 1000 kg m$^{-3}$. 
+
+The volume-integrated horizontal diffusion $\mathrm{Hdiff}^n$ was calculated as
+\begin{equation}
+    \begin{split} \label{eq:append_hdiff}
+            \mathrm{Hdiff}^n = \sum_{i=1}^{I}\sum_{j=1}^{J}\sum_{k=1}^{K} \partial_x \left[ \left(\kappa_{H,i \pm 1/2,j} \right) \left(\partial_x \left(s_{i,j,k}^{n} \right)^2 \right) \right] + \\ \partial_y \left[\left(\kappa_{H,i,j \pm 1/2} \right) \left(\partial_y \left(s_{i,j,k}^{n} \right)^2 \right) \right] \, dV \quad ,
+    \end{split}
+\end{equation}
+
+where $\kappa_{H,i,j}$ is the horizontal turbulent diffusivity computed offline defined in Eq. \ref{eq:kappa_H}. $\kappa_{H,i,j}$ was first linearly interpolated to the centers of cell edges to align the model grid after computing horizontal derivatives $\partial_x$ and $\partial_y$ of $s^2$, which are calculated using a Jacobian to account for the change of the sea surface height with respect to time \citep{shchepetkin2005regional}. Further details of the Jacobian calculation may be found in \citet{xroms}. 
+
+The resolved vertical mixing $(\chi_v^s)^n$ was calculated online so discretization errors do not bias comparisons with $\mathcal{M}_{num, on}$. $(\chi_v^s)^n$ was calculated as 
+\begin{equation} \label{eq:append_vmix}
+        (\chi_v^s)^n = \sum_{i=1}^{I}\sum_{j=1}^{J}\sum_{k=1}^{K} \mathrm{Vert. \, Mix}_{i,j,k}^n \, dV,
+\end{equation}
+where $\mathrm{Vert. \, Mix}_{i,j,k}^n$ is the resolved vertical mixing, denoted by ``$\mathrm{AKr}$" in ROMS syntax (not to be confused with $\mathrm{AKs}$, the resolved vertical salinity diffusion coefficient). $\mathrm{AKr}$ was linearly interpolated to the cell centers of the vertical grid prior to integration. We note that offline calculations of $(\chi_v^s)^n$, although not used in this study, tended to overestimate the online calculations.
+
+The resolved horizontal mixing $(\chi_H^s)^n$ was computed offline because it is not currently programmed into the ROMS source code. It is also much smaller than other terms for our model, so offline discretization errors do not significantly impact $\mathcal{M}_{num, s^2}$.  $(\chi_H^s)^n$ was calculated as
+\begin{equation} \label{eq:append_hmix}
+        (\chi_H^s)^n = \sum_{i=1}^{I}\sum_{j=1}^{J}\sum_{k=1}^{K} 2\kappa_{H,i,j} \left[ \left(\partial_x s_{i,j,k}^n \right)^2+\left(\partial_y s_{i,j,k}^n \right)^2 \right]  \, dV.
+\end{equation}
+
+Horizontal gradients were calculated using a Jacobian but then interpolated to cell centers for both horizontal and vertical grids. Once calculated, the above terms may be substituted into Eq. \ref{eq:salt2_mnum} to obtain $\mathcal{M}_{num, s^2}$.
+
+The process for discretizing the volume-mean salinity variance budget is similar, but requires calculation of the volume-averaged salinity $\overline{s}^n$. $\overline{s}^n$ was calculated as
+\begin{equation}
+        \overline{s}^n = \frac{1}{V^n} \sum_{i=1}^{I}\sum_{j=1}^{J}\sum_{k=1}^{K} s_{i,j,k}^n \, dV \quad .
+\end{equation}
+
+The volume-mean salinity variance $(s_{i,j,k}^{{\prime^2}})^n$ may be calculated as
+\begin{equation}
+        \left(s_{i,j,k}^{{\prime^2}} \right)^n = \left(s_{i,j,k}^n-\overline{s}^n \right)^2.
+\end{equation}
+
+The terms in Eq. \ref{eq:sprime2_mnum} may be calculated by substituting $(s_{i,j,k}^{\prime})^n$ and $(s_{i,j,k}^{\prime^2})^n$ where applicable into Eqs. \ref{eq:append_tend}-\ref{eq:append_finitediff} and Eqs. \ref{eq:append_adv}-\ref{eq:append_hdiff}. Recalculation of the physical mixing terms is not required because $\overline{s}^n$ has no spatial gradients.
+
+\newpage
+% % % \KOMAoptions{paper=portrait,pagesize}
+% % % \recalctypearea
+% \section{References for Appendix}
+% % %%% Manually add references after each section
+% \bibliographystyle{apalike}
+% \begingroup
+% % \renewcommand{\section}[2]{}%
+% \bibliography{references}
+% \endgroup
+
