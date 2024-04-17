@@ -7,7 +7,7 @@
 % \phantomsection
 \chapter{Appendix for Quantification of physical and numerical mixing in a coastal ocean model using salinity variance budgets}%\label{appendix:01}
 
-\section{Numerical implementation of the offline method} %\label{Appendix:offline_method}
+\section{Numerical implementation of the offline method} \label{Appendix:offline_method}
 
 Here, we provide details of the numerical implementation of Eq. \ref{eq:salt2_mnum} and Eq. \ref{eq:sprime2_mnum} for the case of hourly model output. We used average files to construct the volume-integrated $s^2$ and $s^{\prime^2}$ budgets, which output averages of all variables between each hour. The implementation is shown for a 3D control volume $V$ larger than one discrete water column. Spatial indices are denoted with subscripts $i,j,k$ corresponding to the $x,y,z$ directions with temporal index $n$. Calculations at the cell centers are denoted with whole indices. Calculations on the center of cell edges are denoted with half indices. 
 
@@ -79,7 +79,7 @@ The volume-mean salinity variance $(s_{i,j,k}^{{\prime^2}})^n$ may be calculated
 
 The terms in Eq. \ref{eq:sprime2_mnum} may be calculated by substituting $(s_{i,j,k}^{\prime})^n$ and $(s_{i,j,k}^{\prime^2})^n$ where applicable into Eqs. \ref{eq:append_tend}-\ref{eq:append_finitediff} and Eqs. \ref{eq:append_adv}-\ref{eq:append_hdiff}. Recalculation of the physical mixing terms is not required because $\overline{s}^n$ has no spatial gradients.
 
-\newpage
+%\newpage
 % % % \KOMAoptions{paper=portrait,pagesize}
 % % % \recalctypearea
 % \section{References for Appendix}
